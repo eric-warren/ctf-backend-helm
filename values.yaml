@@ -1,0 +1,7 @@
+image: bige99/test-ctf-chal
+chalName: sauce
+dockerPort: 80
+extPort: 30000
+liveCommand:
+  - cat
+  - /usr/local/apache2/htdocs/disableMouseRightClick.js

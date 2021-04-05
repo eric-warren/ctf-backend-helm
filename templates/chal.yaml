@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ctf-backend-{{ .Values.chalName }}
+  labels:
+    app: ctf-{{ .Values.chalName }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ctf-{{ .Values.chalName }}
+  template:
+    metadata:
+      labels:
+        app: ctf-{{ .Values.chalName }}
+    spec:
+      containers:
+      - name: {{ .Values.chalName }}
+        image: {{ .Values.image }}
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+              {{- range .Values.liveCommand }}
+              - {{ . }}
+              {{ end }}
+          initialDelaySeconds: 15
+          periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ctf-{{ .Values.chalName }}-service
+spec:
+  type: NodePort
+  selector:
+    app: ctf-{{ .Values.chalName }}
+  ports:
+    - port: {{ .Values.dockerPort }}
+      nodePort: {{ .Values.extPort }}
